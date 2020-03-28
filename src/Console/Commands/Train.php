@@ -4,17 +4,13 @@ namespace DivineOmega\EloquentAttributeValuePrediction\Console\Commands;
 
 use Illuminate\Console\Command;
 use Illuminate\Database\Eloquent\Model;
+use Rubix\ML\Classifiers\KNearestNeighbors;
 use Rubix\ML\Classifiers\MultilayerPerceptron;
 use Rubix\ML\Datasets\Labeled;
-use Rubix\ML\NeuralNet\Layers\Dense;
-use Rubix\ML\NeuralNet\Layers\PReLU;
-use Rubix\ML\Other\Tokenizers\NGram;
 use Rubix\ML\PersistentModel;
 use Rubix\ML\Persisters\Filesystem;
 use Rubix\ML\Pipeline;
-use Rubix\ML\Transformers\TextNormalizer;
-use Rubix\ML\Transformers\TfIdfTransformer;
-use Rubix\ML\Transformers\WordCountVectorizer;
+use Rubix\ML\Transformers\OneHotEncoder;
 use Rubix\ML\Transformers\ZScaleStandardizer;
 
 class Train extends Command
@@ -50,6 +46,12 @@ class Train extends Command
      */
     public function handle()
     {
+        $modelsPath = storage_path('eavp/models');
+
+        if (!is_dir($modelsPath)) {
+            mkdir($modelsPath, 0777, true);
+        }
+
         $modelClass = $this->argument('model');
 
         /** @var Model $model */
@@ -72,7 +74,7 @@ class Train extends Command
 
             $this->line('Training classification of '.$classAttribute.' attribute from '.implode(', ', $attributesToTrainFrom).' attributes...');
 
-            $modelFile = storage_path(sha1(serialize([$modelClass, $classAttribute, $attributesToTrainFrom])));
+            $modelFile = $modelsPath.sha1(serialize([$modelClass, $classAttribute, $attributesToTrainFrom])).'.model';
 
             /** @var MultilayerPerceptron $estimator */
             $estimator = $this->getEstimator($modelFile);
@@ -83,16 +85,33 @@ class Train extends Command
                 foreach ($instances as $instance) {
                     $sample = [];
                     foreach($attributesToTrainFrom as $attributeToTrainFrom) {
-                        $samples[] = $instance->getAttributeValue($attributeToTrainFrom);
+                        $value = $instance->getAttributeValue($attributeToTrainFrom);
+                        if ($value === null) {
+                            $value = '?';
+                        }
+                        if (is_object($value) || is_array($value)) {
+                            $value = serialize($value);
+                        }
+                        $sample[] = $value;
                     }
                     $samples[] = $sample;
-                    $classes[] = $instance->getAttributeValue($classAttribute);
+
+                    $classValue = $instance->getAttributeValue($classAttribute);
+                    if ($classValue === null) {
+                        $classValue = '?';
+                    }
+                    if (is_object($classValue) || is_array($classValue)) {
+                        $classValue = serialize($classValue);
+                    }
+                    $classes[] = $classValue;
                 }
 
                 $dataset = new Labeled($samples, $classes);
 
                 $estimator->partial($dataset);
             });
+
+            $estimator->save();
         }
 
 
@@ -103,23 +122,10 @@ class Train extends Command
         return new PersistentModel(
             new Pipeline(
                 [
-                    new TextNormalizer(true),
-                    new WordCountVectorizer(10000, 3, new NGram(1, 3)),
-                    new TfIdfTransformer(),
-                    new ZScaleStandardizer()
+                    new OneHotEncoder(),
+                    new ZScaleStandardizer(),
                 ],
-                new MultilayerPerceptron([
-                    new Dense(100),
-                    new PReLU(),
-                    new Dense(100),
-                    new PReLU(),
-                    new Dense(100),
-                    new PReLU(),
-                    new Dense(50),
-                    new PReLU(),
-                    new Dense(50),
-                    new PReLU(),
-                ])
+                new KNearestNeighbors()
             ),
             new Filesystem($modelFile)
         );
