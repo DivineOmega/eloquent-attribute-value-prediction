@@ -70,9 +70,9 @@ class Train extends Command
             $attributesToTrainFrom = $attributes;
             unset($attributesToTrainFrom[array_search($classAttribute, $attributes)]);
 
-            $this->line('Training classification of '.$classAttribute.' attribute from '.implode(', ', $attributes).' attributes...');
+            $this->line('Training classification of '.$classAttribute.' attribute from '.implode(', ', $attributesToTrainFrom).' attributes...');
 
-            $modelFile = storage_path(sha1(serialize([$modelClass, $classAttribute])));
+            $modelFile = storage_path(sha1(serialize([$modelClass, $classAttribute, $attributesToTrainFrom])));
 
             /** @var MultilayerPerceptron $estimator */
             $estimator = $this->getEstimator($modelFile);
