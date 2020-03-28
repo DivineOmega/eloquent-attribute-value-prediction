@@ -1,0 +1,16 @@
+{
+    "name": "divineomega/eloquent-attribute-value-prediction",
+    "description": "Predict attribute values for your Laravel Eloquent models using machine learning!",
+    "type": "library",
+    "license": "LGPL-3.0-only",
+    "authors": [
+        {
+            "name": "Jordan Hall",
+            "email": "jordan@hall05.co.uk"
+        }
+    ],
+    "require": {
+        "laravel/framework": "^5.1||^6.0||^7.0",
+        "rubix/ml": "0.0.20-rc1"
+    }
+}
