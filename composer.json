@@ -10,6 +10,7 @@
         }
     ],
     "require": {
+        "php": ">=7.1",
         "laravel/framework": "^5.1||^6.0||^7.0",
         "rubix/ml": "0.0.20-rc1"
     }
