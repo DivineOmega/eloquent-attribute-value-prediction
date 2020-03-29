@@ -20,7 +20,15 @@ trait HasAttributeValuePrediction
         /** @var KNearestNeighbors $estimator */
         $estimator = PersistentModel::load(new Filesystem($modelPath));
 
-        return $estimator->predict($dataset)[0];
+        $prediction = $estimator->predict($dataset)[0];
+
+        $unserializedPrediction = @unserialize($prediction);
+
+        if ($unserializedPrediction !== false) {
+            return $unserializedPrediction;
+        }
+
+        return $prediction;
     }
 
     public function getPredictions($attribute): array
