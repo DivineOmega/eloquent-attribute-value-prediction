@@ -24,7 +24,7 @@ trait HasAttributeValuePrediction
 
         $unserializedPrediction = @unserialize($prediction);
 
-        if ($unserializedPrediction !== false) {
+        if ($prediction === 'b:0;' || $unserializedPrediction !== false) {
             return $unserializedPrediction;
         }
 
