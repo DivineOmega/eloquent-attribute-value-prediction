@@ -2,16 +2,25 @@
 
 namespace DivineOmega\EloquentAttributeValuePrediction\Console\Commands;
 
+use DivineOmega\EloquentAttributeValuePrediction\Helpers\PathHelper;
 use Illuminate\Console\Command;
 use Illuminate\Database\Eloquent\Model;
 use Rubix\ML\Classifiers\KNearestNeighbors;
 use Rubix\ML\Classifiers\MultilayerPerceptron;
+use Rubix\ML\CrossValidation\Metrics\Accuracy;
 use Rubix\ML\Datasets\Labeled;
+use Rubix\ML\NeuralNet\Layers\Dense;
+use Rubix\ML\NeuralNet\Layers\PReLU;
+use Rubix\ML\Other\Tokenizers\NGram;
 use Rubix\ML\PersistentModel;
 use Rubix\ML\Persisters\Filesystem;
 use Rubix\ML\Pipeline;
 use Rubix\ML\Transformers\OneHotEncoder;
+use Rubix\ML\Transformers\TextNormalizer;
+use Rubix\ML\Transformers\TfIdfTransformer;
+use Rubix\ML\Transformers\WordCountVectorizer;
 use Rubix\ML\Transformers\ZScaleStandardizer;
+use Rubix\ML\Transformers\KNNImputer;
 
 class Train extends Command
 {
@@ -46,12 +55,6 @@ class Train extends Command
      */
     public function handle()
     {
-        $modelsPath = storage_path('eavp/models');
-
-        if (!is_dir($modelsPath)) {
-            mkdir($modelsPath, 0777, true);
-        }
-
         $modelClass = $this->argument('model');
 
         /** @var Model $model */
@@ -74,12 +77,14 @@ class Train extends Command
 
             $this->line('Training classification of '.$classAttribute.' attribute from '.implode(', ', $attributesToTrainFrom).' attributes...');
 
-            $modelFile = $modelsPath.sha1(serialize([$modelClass, $classAttribute, $attributesToTrainFrom])).'.model';
+            $modelPath = PathHelper::getModelPath($modelClass, $classAttribute);
 
-            /** @var MultilayerPerceptron $estimator */
-            $estimator = $this->getEstimator($modelFile);
+            /** @var KNearestNeighbors $estimator */
+            $estimator = $this->getEstimator($modelPath);
 
-            $model->query()->chunk(100, function ($instances) use ($attributesToTrainFrom, $classAttribute, $estimator) {
+            $needsInitialTraining = true;
+
+            $model->query()->chunk(100, function ($instances) use ($attributesToTrainFrom, $classAttribute, $estimator, $needsInitialTraining) {
                 $samples = [];
                 $classes = [];
                 foreach ($instances as $instance) {
@@ -108,7 +113,12 @@ class Train extends Command
 
                 $dataset = new Labeled($samples, $classes);
 
-                $estimator->partial($dataset);
+                if ($needsInitialTraining) {
+                    $estimator->train($dataset);
+                    $needsInitialTraining = false;
+                } else {
+                    $estimator->partial($dataset);
+                }
             });
 
             $estimator->save();
@@ -117,7 +127,7 @@ class Train extends Command
 
     }
 
-    private function getEstimator($modelFile)
+    private function getEstimator($modelPath)
     {
         return new PersistentModel(
             new Pipeline(
@@ -127,7 +137,7 @@ class Train extends Command
                 ],
                 new KNearestNeighbors()
             ),
-            new Filesystem($modelFile)
+            new Filesystem($modelPath)
         );
     }
 }
