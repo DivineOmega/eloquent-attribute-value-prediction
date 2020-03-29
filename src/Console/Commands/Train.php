@@ -3,6 +3,7 @@
 namespace DivineOmega\EloquentAttributeValuePrediction\Console\Commands;
 
 use DivineOmega\EloquentAttributeValuePrediction\Helpers\PathHelper;
+use DivineOmega\EloquentAttributeValuePrediction\Interfaces\AttributeValuePredictionModelInterface;
 use Illuminate\Console\Command;
 use Illuminate\Database\Eloquent\Model;
 use Rubix\ML\Classifiers\KNearestNeighbors;
@@ -21,6 +22,7 @@ use Rubix\ML\Transformers\TfIdfTransformer;
 use Rubix\ML\Transformers\WordCountVectorizer;
 use Rubix\ML\Transformers\ZScaleStandardizer;
 use Rubix\ML\Transformers\KNNImputer;
+use Rubix\ML\Other\Loggers\Screen;
 
 class Train extends Command
 {
@@ -65,17 +67,19 @@ class Train extends Command
             die;
         }
 
-        // Get all model attributes
-        $attributes = array_keys($model->first()->getAttributes());
+        if (!$model instanceof AttributeValuePredictionModelInterface) {
+            $this->error('The provided class does not implement the AttributeValuePredictionModelInterface.');
+            die;
+        }
 
-        // Remove the primary key
-        unset($attributes[array_search($model->getKeyName(), $attributes)]);
+        // Get all model attributes
+        $attributes = $model->getPredictionAttributes();
 
         foreach($attributes as $classAttribute) {
             $attributesToTrainFrom = $attributes;
             unset($attributesToTrainFrom[array_search($classAttribute, $attributes)]);
 
-            $this->line('Training classification of '.$classAttribute.' attribute from '.implode(', ', $attributesToTrainFrom).' attributes...');
+            $this->line('Training classification of '.$classAttribute.' attribute from '.implode(', ', $attributesToTrainFrom).' attribute(s)...');
 
             $modelPath = PathHelper::getModelPath($modelClass, $classAttribute);
 
@@ -84,7 +88,7 @@ class Train extends Command
 
             $needsInitialTraining = true;
 
-            $model->query()->chunk(100, function ($instances) use ($attributesToTrainFrom, $classAttribute, $estimator, $needsInitialTraining) {
+            $model->query()->chunk(100999, function ($instances) use ($attributesToTrainFrom, $classAttribute, $estimator, $needsInitialTraining) {
                 $samples = [];
                 $classes = [];
                 foreach ($instances as $instance) {
@@ -129,7 +133,7 @@ class Train extends Command
 
     private function getEstimator($modelPath)
     {
-        return new PersistentModel(
+        $estimator = new PersistentModel(
             new Pipeline(
                 [
                     new OneHotEncoder(),
@@ -139,5 +143,9 @@ class Train extends Command
             ),
             new Filesystem($modelPath)
         );
+
+        $estimator->setLogger(new Screen('example'));
+
+        return $estimator;
     }
 }

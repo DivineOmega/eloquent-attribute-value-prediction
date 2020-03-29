@@ -2,8 +2,10 @@
 
 namespace DivineOmega\EloquentAttributeValuePrediction\Traits;
 
+use DivineOmega\EloquentAttributeValuePrediction\Helpers\DatasetHelper;
 use DivineOmega\EloquentAttributeValuePrediction\Helpers\PathHelper;
 use Rubix\ML\Classifiers\KNearestNeighbors;
+use Rubix\ML\Datasets\Unlabeled;
 use Rubix\ML\PersistentModel;
 use Rubix\ML\Persisters\Filesystem;
 
@@ -11,53 +13,25 @@ trait HasAttributeValuePrediction
 {
     public function predict($attribute)
     {
-        $otherAttributes = array_keys($this->getAttributes());
-        unset($otherAttributes[array_search($this->getKeyName(), $otherAttributes)]);
-        unset($otherAttributes[array_search($attribute, $otherAttributes)]);
-
-        $sample = [];
-        foreach($otherAttributes as $otherAttribute) {
-            $value = $instance->getAttributeValue($otherAttribute);
-            if ($value === null) {
-                $value = '?';
-            }
-            if (is_object($value) || is_array($value)) {
-                $value = serialize($value);
-            }
-            $sample[] = $value;
-        }
+        $dataset = DatasetHelper::buildUnlabeledDataset($this, $attribute);
 
         $modelPath = PathHelper::getModelPath(get_class($this), $attribute);
 
         /** @var KNearestNeighbors $estimator */
         $estimator = PersistentModel::load(new Filesystem($modelPath));
 
-        return $estimator->predictSample($sample);
+        return $estimator->predict($dataset)[0];
     }
 
     public function getPredictions($attribute): array
     {
-        $otherAttributes = array_keys($this->getAttributes());
-        unset($otherAttributes[array_search($this->getKeyName(), $otherAttributes)]);
-        unset($otherAttributes[array_search($attribute, $otherAttributes)]);
-
-        $sample = [];
-        foreach($otherAttributes as $otherAttribute) {
-            $value = $instance->getAttributeValue($otherAttribute);
-            if ($value === null) {
-                $value = '?';
-            }
-            if (is_object($value) || is_array($value)) {
-                $value = serialize($value);
-            }
-            $sample[] = $value;
-        }
+        $dataset = DatasetHelper::buildUnlabeledDataset($this, $attribute);
 
         $modelPath = PathHelper::getModelPath(get_class($this), $attribute);
 
         /** @var KNearestNeighbors $estimator */
         $estimator = PersistentModel::load(new Filesystem($modelPath));
 
-        return $estimator->probaSample($sample);
+        return $estimator->proba($dataset)[0];
     }
 }

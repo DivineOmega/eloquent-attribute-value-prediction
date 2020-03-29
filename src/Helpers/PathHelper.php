@@ -12,6 +12,8 @@ abstract class PathHelper
             mkdir($modelDirectory, 0777, true);
         }
 
-        return $modelDirectory.sha1(serialize([$modelClass, $classAttribute])).'.model';
+        $model = new $modelClass;
+
+        return $modelDirectory.sha1(serialize([$modelClass, $classAttribute, $model->getPredictionAttributes()])).'.model';
     }
 }
