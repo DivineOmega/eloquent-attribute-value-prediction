@@ -2,6 +2,7 @@
 
 namespace DivineOmega\EloquentAttributeValuePrediction\Console\Commands;
 
+use DivineOmega\EloquentAttributeValuePrediction\Helpers\DatasetHelper;
 use DivineOmega\EloquentAttributeValuePrediction\Helpers\PathHelper;
 use DivineOmega\EloquentAttributeValuePrediction\Interfaces\AttributeValuePredictionModelInterface;
 use Illuminate\Console\Command;
@@ -86,24 +87,12 @@ class Train extends Command
             /** @var KNearestNeighbors $estimator */
             $estimator = $this->getEstimator($modelPath);
 
-            $needsInitialTraining = true;
+            $samples = [];
+            $classes = [];
 
-            $model->query()->chunk(100999, function ($instances) use ($attributesToTrainFrom, $classAttribute, $estimator, $needsInitialTraining) {
-                $samples = [];
-                $classes = [];
+            $model->query()->chunk(100, function ($instances) use ($attributesToTrainFrom, $classAttribute) {
                 foreach ($instances as $instance) {
-                    $sample = [];
-                    foreach($attributesToTrainFrom as $attributeToTrainFrom) {
-                        $value = $instance->getAttributeValue($attributeToTrainFrom);
-                        if ($value === null) {
-                            $value = '?';
-                        }
-                        if (is_object($value) || is_array($value)) {
-                            $value = serialize($value);
-                        }
-                        $sample[] = $value;
-                    }
-                    $samples[] = $sample;
+                    $samples[] = DatasetHelper::buildSample($instance, $attributesToTrainFrom);
 
                     $classValue = $instance->getAttributeValue($classAttribute);
                     if ($classValue === null) {
@@ -114,16 +103,11 @@ class Train extends Command
                     }
                     $classes[] = $classValue;
                 }
-
-                $dataset = new Labeled($samples, $classes);
-
-                if ($needsInitialTraining) {
-                    $estimator->train($dataset);
-                    $needsInitialTraining = false;
-                } else {
-                    $estimator->partial($dataset);
-                }
             });
+
+            $dataset = new Labeled($samples, $classes);
+
+            $estimator->train($dataset);
 
             $estimator->save();
         }

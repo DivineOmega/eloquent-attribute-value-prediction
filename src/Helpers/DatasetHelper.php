@@ -11,9 +11,17 @@ abstract class DatasetHelper
         $otherAttributes = $model->getPredictionAttributes();
         unset($otherAttributes[array_search($attributeToPredict, $otherAttributes)]);
 
+        $sample = self::buildSample($model, $otherAttributes);
+
+        return new Unlabeled([$sample]);
+    }
+
+    public static function buildSample($model, $attributes)
+    {
         $sample = [];
-        foreach($otherAttributes as $otherAttribute) {
-            $value = $model->getAttributeValue($otherAttribute);
+
+        foreach($attributes as $attribute) {
+            $value = $model->getAttributeValue($attribute);
             if ($value === null) {
                 $value = '?';
             }
@@ -23,6 +31,6 @@ abstract class DatasetHelper
             $sample[] = $value;
         }
 
-        $dataset = new Unlabeled([$sample]);
+        return $sample;
     }
 }
