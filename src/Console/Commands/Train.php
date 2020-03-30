@@ -90,7 +90,7 @@ class Train extends Command
             $samples = [];
             $classes = [];
 
-            $model->query()->chunk(100, function ($instances) use ($attributesToTrainFrom, $classAttribute) {
+            $model->query()->chunk(100, function ($instances) use ($attributesToTrainFrom, $classAttribute, &$samples, &$classes) {
                 foreach ($instances as $instance) {
                     $samples[] = DatasetHelper::buildSample($instance, $attributesToTrainFrom);
 
