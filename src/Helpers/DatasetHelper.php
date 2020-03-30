@@ -2,7 +2,9 @@
 
 namespace DivineOmega\EloquentAttributeValuePrediction\Helpers;
 
+use Carbon\Carbon;
 use Rubix\ML\Datasets\Unlabeled;
+use Exception;
 
 abstract class DatasetHelper
 {
@@ -25,8 +27,11 @@ abstract class DatasetHelper
             if ($value === null) {
                 $value = '?';
             }
-            if (is_object($value) || is_array($value)) {
-                $value = serialize($value);
+            if ($value instanceof Carbon) {
+                $value->getTimestamp();
+            }
+            if (!is_string($value) && !is_numeric($value)) {
+                throw new Exception('The attribute `'.$attribute.'` has a data type that is not supported.');
             }
             $sample[] = $value;
         }
