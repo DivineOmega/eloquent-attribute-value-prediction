@@ -8,19 +8,11 @@ use DivineOmega\EloquentAttributeValuePrediction\Interfaces\AttributeValuePredic
 use Illuminate\Console\Command;
 use Illuminate\Database\Eloquent\Model;
 use Rubix\ML\Classifiers\KNearestNeighbors;
-use Rubix\ML\Classifiers\MultilayerPerceptron;
-use Rubix\ML\CrossValidation\Metrics\Accuracy;
 use Rubix\ML\Datasets\Labeled;
-use Rubix\ML\NeuralNet\Layers\Dense;
-use Rubix\ML\NeuralNet\Layers\PReLU;
-use Rubix\ML\Other\Tokenizers\NGram;
 use Rubix\ML\PersistentModel;
 use Rubix\ML\Persisters\Filesystem;
 use Rubix\ML\Pipeline;
 use Rubix\ML\Transformers\OneHotEncoder;
-use Rubix\ML\Transformers\TextNormalizer;
-use Rubix\ML\Transformers\TfIdfTransformer;
-use Rubix\ML\Transformers\WordCountVectorizer;
 use Rubix\ML\Transformers\ZScaleStandardizer;
 use Rubix\ML\Transformers\MissingDataImputer;
 use Rubix\ML\Other\Loggers\Screen;
@@ -86,7 +78,6 @@ class Train extends Command
 
             $modelPath = PathHelper::getModelPath($modelClass, $classAttribute);
 
-            /** @var KNearestNeighbors $estimator */
             $estimator = $this->getEstimator($modelPath);
 
             $samples = [];

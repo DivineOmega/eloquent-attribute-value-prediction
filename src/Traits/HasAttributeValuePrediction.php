@@ -5,7 +5,6 @@ namespace DivineOmega\EloquentAttributeValuePrediction\Traits;
 use DivineOmega\EloquentAttributeValuePrediction\Helpers\DatasetHelper;
 use DivineOmega\EloquentAttributeValuePrediction\Helpers\PathHelper;
 use Rubix\ML\Classifiers\KNearestNeighbors;
-use Rubix\ML\Datasets\Unlabeled;
 use Rubix\ML\PersistentModel;
 use Rubix\ML\Persisters\Filesystem;
 
@@ -37,7 +36,6 @@ trait HasAttributeValuePrediction
 
         $modelPath = PathHelper::getModelPath(get_class($this), $attribute);
 
-        /** @var KNearestNeighbors $estimator */
         $estimator = PersistentModel::load(new Filesystem($modelPath));
 
         return $estimator->proba($dataset)[0];
