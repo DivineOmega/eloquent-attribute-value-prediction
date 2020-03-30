@@ -22,8 +22,10 @@ use Rubix\ML\Transformers\TextNormalizer;
 use Rubix\ML\Transformers\TfIdfTransformer;
 use Rubix\ML\Transformers\WordCountVectorizer;
 use Rubix\ML\Transformers\ZScaleStandardizer;
-use Rubix\ML\Transformers\KNNImputer;
+use Rubix\ML\Transformers\MissingDataImputer;
 use Rubix\ML\Other\Loggers\Screen;
+use Rubix\ML\Transformers\NumericStringConverter;
+
 
 class Train extends Command
 {
@@ -120,6 +122,8 @@ class Train extends Command
         $estimator = new PersistentModel(
             new Pipeline(
                 [
+                    new MissingDataImputer(),
+                    new NumericStringConverter(),
                     new OneHotEncoder(),
                     new ZScaleStandardizer(),
                 ],
