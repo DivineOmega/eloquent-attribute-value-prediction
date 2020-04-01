@@ -23,10 +23,17 @@ abstract class DatasetHelper
         $sample = [];
 
         foreach($attributes as $attribute) {
+
             $value = $model->getAttributeValue($attribute);
+
             if ($value === null) {
-                $value = '?';
+                if ($model->isAttributeContinuous($attribute)) {
+                    $value = NAN;
+                } else {
+                    $value = '?';
+                }
             }
+
             if ($value instanceof Carbon) {
                 $value->getTimestamp();
             }

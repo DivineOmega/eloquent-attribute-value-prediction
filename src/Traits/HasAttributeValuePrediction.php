@@ -41,8 +41,20 @@ trait HasAttributeValuePrediction
         return $estimator->proba($dataset)[0];
     }
 
-    public function getClassAttributeCast(string $classAttribute)
+    public function getAttributeCast(string $attribute)
     {
-        return $this->casts[$classAttribute];
+        return $this->casts[$attribute];
+    }
+    
+    public function isAttributeContinuous(string $attribute)
+    {
+        $attributeCast = $this->getAttributeCast($attribute);
+
+        return (in_array($attributeCast, [
+                'integer',
+                'real',
+                'float',
+                'double',
+            ]) || stripos($attributeCast, 'decimal') !== false);
     }
 }

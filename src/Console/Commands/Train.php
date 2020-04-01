@@ -79,7 +79,7 @@ class Train extends Command
 
             $modelPath = PathHelper::getModelPath($modelClass, $classAttribute);
 
-            $estimator = $this->getEstimatorForClassAttributeCast($modelPath, $model->getClassAttributeCast($classAttribute));
+            $estimator = $this->getEstimator($modelPath, $model->isAttributeContinuous($classAttribute));
 
             $samples = [];
             $classes = [];
@@ -109,16 +109,11 @@ class Train extends Command
 
     }
 
-    private function getEstimatorForClassAttributeCast(string $modelPath, string $classAttributeCast)
+    private function getEstimator(string $modelPath, bool $continuous)
     {
         $baseEstimator = new KNearestNeighbors();
 
-        if (in_array($classAttributeCast, [
-                'integer',
-                'real',
-                'float',
-                'double',
-            ]) || stripos($classAttributeCast, 'decimal') !== false) {
+        if ($continuous) {
             $baseEstimator = new KNNRegressor();
         }
 
