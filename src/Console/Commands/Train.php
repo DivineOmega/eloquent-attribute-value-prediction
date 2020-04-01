@@ -114,7 +114,6 @@ class Train extends Command
             new Pipeline(
                 [
                     new MissingDataImputer(),
-                    new NumericStringConverter(),
                     new OneHotEncoder(),
                     new ZScaleStandardizer(),
                 ],
