@@ -75,7 +75,7 @@ class Train extends Command
             $attributesToTrainFrom = $attributes;
             unset($attributesToTrainFrom[array_search($classAttribute, $attributes)]);
 
-            $this->line('Training classification of '.$classAttribute.' attribute from '.implode(', ', $attributesToTrainFrom).' attribute(s)...');
+            $this->line('Training classification of '.$classAttribute.' attribute from '.count($attributesToTrainFrom).' other attribute(s)...');
 
             $modelPath = PathHelper::getModelPath($modelClass, $classAttribute);
 
@@ -114,11 +114,11 @@ class Train extends Command
         $baseEstimator = new KNearestNeighbors();
 
         if (in_array($classAttributeCast, [
-            'integer',
-            'real',
-            'float',
-            'double',
-        ]) || stripos($classAttributeCast, 'decimal') !== false) {
+                'integer',
+                'real',
+                'float',
+                'double',
+            ]) || stripos($classAttributeCast, 'decimal') !== false) {
             $baseEstimator = new KNNRegressor();
         }
 
