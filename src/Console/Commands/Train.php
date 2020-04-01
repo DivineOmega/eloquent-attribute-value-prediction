@@ -98,6 +98,30 @@ class Train extends Command
                 }
             });
 
+            $numericKeys = [];
+            $keys = array_keys($samples[0]);
+
+            foreach ($keys as $key) {
+                $keyIsNumeric = true;
+
+                foreach ($samples as $sample) {
+                    if (!is_numeric($sample[$key])) {
+                        $keyIsNumeric = false;
+                        break;
+                    }
+                }
+
+                if ($keyIsNumeric) {
+                    $numericKeys[] = $key;
+                }
+            }
+
+            foreach ($numericKeys as $numericKey) {
+                foreach($samples as &$sample) {
+                    $sample[$numericKey] = (float) $sample[$numericKey];
+                }
+            }
+
             $dataset = new Labeled($samples, $classes);
 
             $estimator->train($dataset);
