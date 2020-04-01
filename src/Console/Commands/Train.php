@@ -129,8 +129,6 @@ class Train extends Command
             new Filesystem($modelPath)
         );
 
-        $estimator->setLogger(new Screen());
-
         return $estimator;
     }
 }
