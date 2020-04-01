@@ -10,7 +10,7 @@ use Rubix\ML\Persisters\Filesystem;
 
 trait HasAttributeValuePrediction
 {
-    public function predict($attribute)
+    public function predict(string $attribute)
     {
         $dataset = DatasetHelper::buildUnlabeledDataset($this, $attribute);
 
@@ -30,7 +30,7 @@ trait HasAttributeValuePrediction
         return $prediction;
     }
 
-    public function getPredictions($attribute): array
+    public function getPredictions(string $attribute): array
     {
         $dataset = DatasetHelper::buildUnlabeledDataset($this, $attribute);
 
@@ -39,5 +39,10 @@ trait HasAttributeValuePrediction
         $estimator = PersistentModel::load(new Filesystem($modelPath));
 
         return $estimator->proba($dataset)[0];
+    }
+
+    public function getClassAttributeCast(string $classAttribute)
+    {
+        return $this->casts[$classAttribute];
     }
 }

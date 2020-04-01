@@ -79,7 +79,7 @@ class Train extends Command
 
             $modelPath = PathHelper::getModelPath($modelClass, $classAttribute);
 
-            $estimator = $this->getEstimatorForClassAttribute($modelPath, $model->casts[$classAttribute]);
+            $estimator = $this->getEstimatorForClassAttributeCast($modelPath, $model->getClassAttributeCast($classAttribute));
 
             $samples = [];
             $classes = [];
@@ -109,7 +109,7 @@ class Train extends Command
 
     }
 
-    private function getEstimatorForClassAttribute(string $modelPath, string $classAttributeCast)
+    private function getEstimatorForClassAttributeCast(string $modelPath, string $classAttributeCast)
     {
         $baseEstimator = new KNearestNeighbors();
 
