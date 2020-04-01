@@ -12,6 +12,7 @@ use Rubix\ML\Datasets\Labeled;
 use Rubix\ML\PersistentModel;
 use Rubix\ML\Persisters\Filesystem;
 use Rubix\ML\Pipeline;
+use Rubix\ML\Regressors\KNNRegressor;
 use Rubix\ML\Transformers\OneHotEncoder;
 use Rubix\ML\Transformers\ZScaleStandardizer;
 use Rubix\ML\Transformers\MissingDataImputer;
@@ -78,7 +79,7 @@ class Train extends Command
 
             $modelPath = PathHelper::getModelPath($modelClass, $classAttribute);
 
-            $estimator = $this->getEstimator($modelPath);
+            $estimator = $this->getEstimatorForClassAttribute($modelPath, $model->casts[$classAttribute]);
 
             $samples = [];
             $classes = [];
@@ -98,30 +99,6 @@ class Train extends Command
                 }
             });
 
-            $numericKeys = [];
-            $keys = array_keys($samples[0]);
-
-            foreach ($keys as $key) {
-                $keyIsNumeric = true;
-
-                foreach ($samples as $sample) {
-                    if (!is_numeric($sample[$key])) {
-                        $keyIsNumeric = false;
-                        break;
-                    }
-                }
-
-                if ($keyIsNumeric) {
-                    $numericKeys[] = $key;
-                }
-            }
-
-            foreach ($numericKeys as $numericKey) {
-                foreach($samples as &$sample) {
-                    $sample[$numericKey] = (float) $sample[$numericKey];
-                }
-            }
-
             $dataset = new Labeled($samples, $classes);
 
             $estimator->train($dataset);
@@ -132,8 +109,19 @@ class Train extends Command
 
     }
 
-    private function getEstimator($modelPath)
+    private function getEstimatorForClassAttribute(string $modelPath, string $classAttributeCast)
     {
+        $baseEstimator = new KNearestNeighbors();
+
+        if (in_array($classAttributeCast, [
+            'integer',
+            'real',
+            'float',
+            'double',
+        ]) || stripos($classAttributeCast, 'decimal') !== false) {
+            $baseEstimator = new KNNRegressor();
+        }
+
         $estimator = new PersistentModel(
             new Pipeline(
                 [
@@ -141,7 +129,7 @@ class Train extends Command
                     new OneHotEncoder(),
                     new ZScaleStandardizer(),
                 ],
-                new KNearestNeighbors()
+                $baseEstimator
             ),
             new Filesystem($modelPath)
         );
