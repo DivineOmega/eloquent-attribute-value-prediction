@@ -21,12 +21,6 @@ trait HasAttributeValuePrediction
 
         $prediction = $estimator->predict($dataset)[0];
 
-        $unserializedPrediction = @unserialize($prediction);
-
-        if ($prediction === 'b:0;' || $unserializedPrediction !== false) {
-            return $unserializedPrediction;
-        }
-
         return $prediction;
     }
 

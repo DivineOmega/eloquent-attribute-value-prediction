@@ -34,12 +34,6 @@ abstract class DatasetHelper
                 }
             }
 
-            if ($value instanceof Carbon) {
-                $value->getTimestamp();
-            }
-            if (!is_string($value) && !is_numeric($value)) {
-                throw new Exception('The attribute `'.$attribute.'` has a data type that is not supported.');
-            }
             $sample[] = $value;
         }
 
