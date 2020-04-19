@@ -10,6 +10,7 @@ use Illuminate\Database\Eloquent\Model;
 use Rubix\ML\Classifiers\KNearestNeighbors;
 use Rubix\ML\Classifiers\MultilayerPerceptron;
 use Rubix\ML\Datasets\Labeled;
+use Rubix\ML\Estimator;
 use Rubix\ML\NeuralNet\Layers\Dense;
 use Rubix\ML\NeuralNet\Layers\PReLU;
 use Rubix\ML\NeuralNet\Optimizers\Adam;
@@ -77,12 +78,21 @@ class Train extends Command
         // Get all model attributes
         $attributes = $model->getPredictionAttributes();
 
+        // Get estimators
+        $estimators = $model->getEstimators();
+
         foreach($attributes as $classAttribute => $attributesToTrainFrom) {
             $this->line('Training classification of '.$classAttribute.' attribute from '.count($attributesToTrainFrom).' other attribute(s)...');
 
             $modelPath = PathHelper::getModelPath($modelClass, $classAttribute);
 
-            $estimator = $this->getEstimator($modelPath, $model->isAttributeContinuous($classAttribute));
+            if (array_key_exists($classAttribute, $estimators)) {
+                $baseEstimator = $estimators[$classAttribute];
+            } else {
+                $baseEstimator = $this->getDefaultBaseEstimator($model->isAttributeContinuous($classAttribute));
+            }
+
+            $estimator = $this->getEstimator($modelPath, $baseEstimator);
 
             $samples = [];
             $classes = [];
@@ -113,7 +123,26 @@ class Train extends Command
 
     }
 
-    private function getEstimator(string $modelPath, bool $continuous)
+    private function getEstimator(string $modelPath, Estimator $baseEstimator): Estimator
+    {
+        $estimator = new PersistentModel(
+            new Pipeline(
+                [
+                    new MissingDataImputer(),
+                    new OneHotEncoder(),
+                    new ZScaleStandardizer(),
+                ],
+                $baseEstimator
+            ),
+            new Filesystem($modelPath)
+        );
+
+        $estimator->setLogger(new Screen('train-model'));
+
+        return $estimator;
+    }
+
+    private function getDefaultBaseEstimator(bool $continuous): Estimator
     {
         $layers = [
             new Dense(100),
@@ -134,20 +163,6 @@ class Train extends Command
             $baseEstimator = new MLPRegressor($layers, 100, new Adam(0.0001));
         }
 
-        $estimator = new PersistentModel(
-            new Pipeline(
-                [
-                    new MissingDataImputer(),
-                    new OneHotEncoder(),
-                    new ZScaleStandardizer(),
-                ],
-                $baseEstimator
-            ),
-            new Filesystem($modelPath)
-        );
-
-        $estimator->setLogger(new Screen('train-model'));
-
-        return $estimator;
+        return $baseEstimator;
     }
 }
