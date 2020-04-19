@@ -77,10 +77,7 @@ class Train extends Command
         // Get all model attributes
         $attributes = $model->getPredictionAttributes();
 
-        foreach($attributes as $classAttribute) {
-            $attributesToTrainFrom = $attributes;
-            unset($attributesToTrainFrom[array_search($classAttribute, $attributes)]);
-
+        foreach($attributes as $classAttribute => $attributesToTrainFrom) {
             $this->line('Training classification of '.$classAttribute.' attribute from '.count($attributesToTrainFrom).' other attribute(s)...');
 
             $modelPath = PathHelper::getModelPath($modelClass, $classAttribute);
