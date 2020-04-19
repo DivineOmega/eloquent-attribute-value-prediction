@@ -2,16 +2,20 @@
 
 namespace DivineOmega\EloquentAttributeValuePrediction\Helpers;
 
-use Carbon\Carbon;
+use InvalidArgumentException;
 use Rubix\ML\Datasets\Unlabeled;
-use Exception;
 
 abstract class DatasetHelper
 {
     public static function buildUnlabeledDataset($model, string $attributeToPredict): Unlabeled
     {
-        $otherAttributes = $model->getPredictionAttributes();
-        unset($otherAttributes[array_search($attributeToPredict, $otherAttributes)]);
+        $predictionAttributes = $model->getPredictionAttributes();
+
+        if (!array_key_exists($attributeToPredict, $predictionAttributes)) {
+            throw new InvalidArgumentException('Attempted to predict an attribute that is not returned from the model\'s `getPredictionAttributes` method.');
+        }
+
+        $otherAttributes = $predictionAttributes[$attributeToPredict];
 
         $sample = self::buildSample($model, $otherAttributes);
 
