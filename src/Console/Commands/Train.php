@@ -82,7 +82,7 @@ class Train extends Command
         $estimators = $model->getEstimators();
 
         foreach($attributes as $classAttribute => $attributesToTrainFrom) {
-            $this->line('Training classification of '.$classAttribute.' attribute from '.count($attributesToTrainFrom).' other attribute(s)...');
+            $this->line('Training model for '.$classAttribute.' attribute from '.count($attributesToTrainFrom).' other attribute(s)...');
 
             $modelPath = PathHelper::getModelPath($modelClass, $classAttribute);
 
@@ -118,9 +118,11 @@ class Train extends Command
 
             $estimator->setLogger(new BlackHole());
             $estimator->save();
+
+            $this->line('Training completed for '.$classAttribute.'.');
         }
 
-
+        $this->line('All training completed.');
     }
 
     private function getEstimator(string $modelPath, Estimator $baseEstimator): Estimator
