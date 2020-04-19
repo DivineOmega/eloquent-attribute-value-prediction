@@ -16,7 +16,6 @@ trait HasAttributeValuePrediction
 
         $modelPath = PathHelper::getModelPath(get_class($this), $attribute);
 
-        /** @var KNearestNeighbors $estimator */
         $estimator = PersistentModel::load(new Filesystem($modelPath));
 
         $prediction = $estimator->predict($dataset)[0];
