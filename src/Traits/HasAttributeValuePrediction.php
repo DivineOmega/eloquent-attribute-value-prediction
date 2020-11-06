@@ -35,24 +35,14 @@ trait HasAttributeValuePrediction
         return $estimator->proba($dataset)[0];
     }
 
-    public function getAttributeCast(string $attribute)
+    public function isAttributeContinuous(string $attribute)
     {
-        if (!array_key_exists($attribute, $this->casts)) {
+        if (!$this->hasCast($attribute)) {
             throw new Exception('The attribute `'.$attribute.'` is missing from the model\'s `$casts` array.');
         }
 
-        return $this->casts[$attribute];
-    }
-    
-    public function isAttributeContinuous(string $attribute)
-    {
-        $attributeCast = $this->getAttributeCast($attribute);
+        $castType = $this->getCastType($attribute);
 
-        return (in_array($attributeCast, [
-                'integer',
-                'real',
-                'float',
-                'double',
-            ]) || stripos($attributeCast, 'decimal') !== false);
+        return in_array($castType, ['int', 'integer', 'real', 'float', 'double', 'decimal']);
     }
 }
