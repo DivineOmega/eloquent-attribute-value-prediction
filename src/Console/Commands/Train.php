@@ -7,6 +7,7 @@ use DivineOmega\EloquentAttributeValuePrediction\Helpers\PathHelper;
 use DivineOmega\EloquentAttributeValuePrediction\Interfaces\AttributeValuePredictionModelInterface;
 use Illuminate\Console\Command;
 use Illuminate\Database\Eloquent\Model;
+use Rubix\ML\Classifiers\KDNeighbors;
 use Rubix\ML\Classifiers\KNearestNeighbors;
 use Rubix\ML\Classifiers\MultilayerPerceptron;
 use Rubix\ML\Datasets\Labeled;
@@ -18,6 +19,7 @@ use Rubix\ML\Other\Loggers\BlackHole;
 use Rubix\ML\PersistentModel;
 use Rubix\ML\Persisters\Filesystem;
 use Rubix\ML\Pipeline;
+use Rubix\ML\Regressors\KDNeighborsRegressor;
 use Rubix\ML\Regressors\KNNRegressor;
 use Rubix\ML\Regressors\MLPRegressor;
 use Rubix\ML\Transformers\OneHotEncoder;
@@ -146,16 +148,16 @@ class Train extends Command
 
     private function getDefaultBaseEstimator(bool $continuous): Estimator
     {
-        $layers = [
-            new Dense(100),
-            new Dense(100),
-            new Dense(100),
-        ];
+//        $layers = [
+//            new Dense(100),
+//            new Dense(100),
+//            new Dense(100),
+//        ];
 
-        $baseEstimator = new MultilayerPerceptron($layers);
+        $baseEstimator = new KDNeighbors();
 
         if ($continuous) {
-            $baseEstimator = new MLPRegressor($layers);
+            $baseEstimator = new KDNeighborsRegressor();
         }
 
         return $baseEstimator;

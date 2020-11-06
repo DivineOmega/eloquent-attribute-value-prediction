@@ -36,7 +36,7 @@ final class PredictionTest extends TestCase
 
         $percentageCorrect = ($correct / $flowers->count()) * 100;
 
-        $this->assertGreaterThanOrEqual(70, $percentageCorrect);
+        $this->assertGreaterThanOrEqual(95, $percentageCorrect);
     }
 
     public function testPetalWidthPrediction()
@@ -51,7 +51,7 @@ final class PredictionTest extends TestCase
 
         $averageDiff = abs(array_sum($differences) / count($differences));
 
-        $this->assertLessThanOrEqual(0.30, $averageDiff);
+        $this->assertLessThanOrEqual(0.002, $averageDiff);
     }
 
 }
