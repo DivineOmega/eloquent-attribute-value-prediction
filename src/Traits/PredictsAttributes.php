@@ -5,11 +5,10 @@ namespace DivineOmega\EloquentAttributeValuePrediction\Traits;
 use DivineOmega\EloquentAttributeValuePrediction\Helpers\DatasetHelper;
 use DivineOmega\EloquentAttributeValuePrediction\Helpers\PathHelper;
 use Exception;
-use Rubix\ML\Classifiers\KNearestNeighbors;
 use Rubix\ML\PersistentModel;
 use Rubix\ML\Persisters\Filesystem;
 
-trait HasAttributeValuePrediction
+trait PredictsAttributes
 {
     public function predict(string $attribute)
     {
@@ -44,5 +43,10 @@ trait HasAttributeValuePrediction
         $castType = $this->getCastType($attribute);
 
         return in_array($castType, ['int', 'integer', 'real', 'float', 'double', 'decimal']);
+    }
+
+    public function registerEstimators(): array
+    {
+        return [];
     }
 }

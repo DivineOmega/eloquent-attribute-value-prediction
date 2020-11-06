@@ -2,17 +2,17 @@
 
 namespace DivineOmega\EloquentAttributeValuePrediction\Tests\Unit\TestClasses\Eloquent;
 
-use DivineOmega\EloquentAttributeValuePrediction\Interfaces\AttributeValuePredictionModelInterface;
-use DivineOmega\EloquentAttributeValuePrediction\Traits\HasAttributeValuePrediction;
+use DivineOmega\EloquentAttributeValuePrediction\Interfaces\HasPredictableAttributes;
+use DivineOmega\EloquentAttributeValuePrediction\Traits\PredictsAttributes;
 use DivineOmega\uxdm\Objects\Destinations\AssociativeArrayDestination;
 use DivineOmega\uxdm\Objects\Migrator;
 use DivineOmega\uxdm\Objects\Sources\CSVSource;
 use Illuminate\Database\Eloquent\Model;
 use Sushi\Sushi;
 
-class IrisFlower extends Model implements AttributeValuePredictionModelInterface
+class IrisFlower extends Model implements HasPredictableAttributes
 {
-    use HasAttributeValuePrediction;
+    use PredictsAttributes;
     use Sushi;
 
     protected $casts = [
@@ -23,7 +23,7 @@ class IrisFlower extends Model implements AttributeValuePredictionModelInterface
         'species' => 'string',
     ];
 
-    public function getPredictionAttributes(): array
+    public function registerPredictableAttributes(): array
     {
         return [
             'species' => [
@@ -39,11 +39,6 @@ class IrisFlower extends Model implements AttributeValuePredictionModelInterface
                 'species',
             ]
         ];
-    }
-
-    public function getEstimators(): array
-    {
-        return [];
     }
 
     public function getRows()

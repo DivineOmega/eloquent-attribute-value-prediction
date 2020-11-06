@@ -4,7 +4,7 @@ namespace DivineOmega\EloquentAttributeValuePrediction\Console\Commands;
 
 use DivineOmega\EloquentAttributeValuePrediction\Helpers\DatasetHelper;
 use DivineOmega\EloquentAttributeValuePrediction\Helpers\PathHelper;
-use DivineOmega\EloquentAttributeValuePrediction\Interfaces\AttributeValuePredictionModelInterface;
+use DivineOmega\EloquentAttributeValuePrediction\Interfaces\HasPredictableAttributes;
 use Illuminate\Console\Command;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\App;
@@ -73,16 +73,16 @@ class Train extends Command
             die;
         }
 
-        if (!$model instanceof AttributeValuePredictionModelInterface) {
+        if (!$model instanceof HasPredictableAttributes) {
             $this->error('The provided class does not implement the AttributeValuePredictionModelInterface.');
             die;
         }
 
         // Get all model attributes
-        $attributes = $model->getPredictionAttributes();
+        $attributes = $model->registerPredictableAttributes();
 
         // Get estimators
-        $estimators = $model->getEstimators();
+        $estimators = $model->registerEstimators();
 
         foreach($attributes as $classAttribute => $attributesToTrainFrom) {
             $this->line('Training model for '.$classAttribute.' attribute from '.count($attributesToTrainFrom).' other attribute(s)...');
