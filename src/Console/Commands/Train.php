@@ -7,6 +7,7 @@ use DivineOmega\EloquentAttributeValuePrediction\Helpers\PathHelper;
 use DivineOmega\EloquentAttributeValuePrediction\Interfaces\AttributeValuePredictionModelInterface;
 use Illuminate\Console\Command;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\App;
 use Rubix\ML\Classifiers\KDNeighbors;
 use Rubix\ML\Classifiers\KNearestNeighbors;
 use Rubix\ML\Classifiers\MultilayerPerceptron;
@@ -141,7 +142,9 @@ class Train extends Command
             new Filesystem($modelPath)
         );
 
-//        $estimator->setLogger(new Screen('train-model'));
+        if (!App::runningUnitTests()) {
+            $estimator->setLogger(new Screen('train-model'));
+        }
 
         return $estimator;
     }
