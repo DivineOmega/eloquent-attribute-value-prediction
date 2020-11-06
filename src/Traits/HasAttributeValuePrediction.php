@@ -4,6 +4,7 @@ namespace DivineOmega\EloquentAttributeValuePrediction\Traits;
 
 use DivineOmega\EloquentAttributeValuePrediction\Helpers\DatasetHelper;
 use DivineOmega\EloquentAttributeValuePrediction\Helpers\PathHelper;
+use Exception;
 use Rubix\ML\Classifiers\KNearestNeighbors;
 use Rubix\ML\PersistentModel;
 use Rubix\ML\Persisters\Filesystem;
@@ -36,6 +37,10 @@ trait HasAttributeValuePrediction
 
     public function getAttributeCast(string $attribute)
     {
+        if (!array_key_exists($attribute, $this->casts)) {
+            throw new Exception('The attribute `'.$attribute.'` is missing from the model\'s `$casts` array.');
+        }
+
         return $this->casts[$attribute];
     }
     

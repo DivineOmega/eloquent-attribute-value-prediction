@@ -139,7 +139,7 @@ class Train extends Command
             new Filesystem($modelPath)
         );
 
-        $estimator->setLogger(new Screen('train-model'));
+//        $estimator->setLogger(new Screen('train-model'));
 
         return $estimator;
     }
@@ -148,21 +148,14 @@ class Train extends Command
     {
         $layers = [
             new Dense(100),
-            new PReLU(),
             new Dense(100),
-            new PReLU(),
             new Dense(100),
-            new PReLU(),
-            new Dense(50),
-            new PReLU(),
-            new Dense(50),
-            new PReLU(),
         ];
 
-        $baseEstimator = new MultilayerPerceptron($layers, 100, new Adam(0.0001));
+        $baseEstimator = new MultilayerPerceptron($layers);
 
         if ($continuous) {
-            $baseEstimator = new MLPRegressor($layers, 100, new Adam(0.0001));
+            $baseEstimator = new MLPRegressor($layers);
         }
 
         return $baseEstimator;
