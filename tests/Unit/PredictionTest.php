@@ -51,7 +51,7 @@ final class PredictionTest extends TestCase
 
         $averageDiff = abs(array_sum($differences) / count($differences));
 
-        $this->assertLessThanOrEqual(0.25, $averageDiff);
+        $this->assertLessThanOrEqual(0.30, $averageDiff);
     }
 
 }
