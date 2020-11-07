@@ -96,5 +96,68 @@ public function registerPredictableAttributes(): array
     }
 ```
 
-TODO: Mention requirement to cast
-TODO: Mention training artisan command
+You also need to add the attributes you are using to the `$casts` array. 
+It is important that the machine learning algorithm knows the type of data
+stored in each attribute, and that it is consistent.
+
+For our `IrisFlower` example, the following format is appropriate.
+
+```php
+protected $casts = [
+        'sepal_length' => 'float',
+        'sepal_width' => 'float',
+        'petal_length' => 'float',
+        'petal_width' => 'float',
+        'species' => 'string',
+    ];
+``` 
+
+## Training
+
+Before you can make attribute value predictions, you must train a machine 
+learning model on your data. As a general rule, the more data you provide
+your model, the better it will perform, and the more accurate it will be.
+
+You can train your model(s) using the `eavp:train` Artisan command, as shown
+in the example below.
+
+```bash
+php artisan eavp:train \App\Models\IrisFlower
+```
+
+One model will be trained for each of the attributes you wish to predict. When
+they are trained, they will be saved into the `storage/eavp/model/` directory
+for future use.
+
+Be aware that the training process can take some time to complete depending 
+on the amount of data you are using, and the complexity of your machine 
+learning model. Training progress will be output to the console where possible.
+
+You can re-run this command (manually, or on a schedule) to re-train your 
+machine learning model(s). Previously trained models will be replaced 
+automatically. 
+
+## Prediction
+
+Once you have set up your Eloquent model, and trained your machine learning 
+model(s), you can begin predicting attributes.
+
+For example, to predict the species of an IrisFlower, you can create a new
+`IrisFlower` object and populate a few of its known attributes, then call the
+`predict` method.
+
+```php
+$flower = new \App\Models\IrisFlower();
+$flower->sepal_length = 5.1;
+$flower->sepal_width = 3.5;
+$flower->petal_length = 1.4;
+$flower->petal_width = 0.2;
+
+$species = $flower->predict('species');  
+```
+
+The `predict` method should be passed the attribute name you wish to predict.
+It will then returns the prediction as a string or numeric type. 
+
+In our example, this should be the 'setosa'
+species, based on [Iris flower data set](https://en.wikipedia.org/wiki/Iris_flower_data_set).
