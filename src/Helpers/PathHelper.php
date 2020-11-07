@@ -14,6 +14,8 @@ abstract class PathHelper
 
         $model = new $modelClass;
 
-        return $modelDirectory.sha1(serialize([$modelClass, $classAttribute, $model->getPredictionAttributes()])).'.model';
+        $predictableAttributes = $model->registerPredictableAttributes();
+
+        return $modelDirectory.sha1(serialize([$modelClass, $classAttribute, $predictableAttributes])).'.model';
     }
 }

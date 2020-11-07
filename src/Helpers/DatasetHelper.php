@@ -9,13 +9,13 @@ abstract class DatasetHelper
 {
     public static function buildUnlabeledDataset($model, string $attributeToPredict): Unlabeled
     {
-        $predictionAttributes = $model->getPredictionAttributes();
+        $predictableAttributes = $model->registerPredictableAttributes();
 
-        if (!array_key_exists($attributeToPredict, $predictionAttributes)) {
+        if (!array_key_exists($attributeToPredict, $predictableAttributes)) {
             throw new InvalidArgumentException('Attempted to predict an attribute that is not returned from the model\'s `getPredictionAttributes` method.');
         }
 
-        $otherAttributes = $predictionAttributes[$attributeToPredict];
+        $otherAttributes = $predictableAttributes[$attributeToPredict];
 
         $sample = self::buildSample($model, $otherAttributes);
 
