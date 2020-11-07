@@ -161,3 +161,13 @@ It will then returns the prediction as a string or numeric type.
 
 In our example, this should be the 'setosa'
 species, based on [Iris flower data set](https://en.wikipedia.org/wiki/Iris_flower_data_set).
+
+## Advanced
+
+### Prediction probabilities
+
+TODO
+
+### Changing machine learning model(s)
+
+TODO
