@@ -5,6 +5,7 @@ namespace DivineOmega\EloquentAttributeValuePrediction\Traits;
 use DivineOmega\EloquentAttributeValuePrediction\Helpers\DatasetHelper;
 use DivineOmega\EloquentAttributeValuePrediction\Helpers\PathHelper;
 use Exception;
+use InvalidArgumentException;
 use Rubix\ML\PersistentModel;
 use Rubix\ML\Persisters\Filesystem;
 
@@ -25,13 +26,23 @@ trait PredictsAttributes
 
     public function getPredictions(string $attribute): array
     {
+        if ($this->isAttributeContinuous($attribute)) {
+            throw new InvalidArgumentException(
+                'You can not get multiple predictions for a continious (numeric) argument. Try using the `predict` method instead.'
+            );
+        }
+
         $dataset = DatasetHelper::buildUnlabeledDataset($this, $attribute);
 
         $modelPath = PathHelper::getModelPath(get_class($this), $attribute);
 
         $estimator = PersistentModel::load(new Filesystem($modelPath));
 
-        return $estimator->proba($dataset)[0];
+        $predictions = $estimator->proba($dataset)[0];
+
+        arsort($predictions);
+
+        return $predictions;
     }
 
     public function isAttributeContinuous(string $attribute)

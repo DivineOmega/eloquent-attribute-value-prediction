@@ -54,4 +54,30 @@ final class PredictionTest extends TestCase
         $this->assertLessThanOrEqual(0.002, $averageDiff);
     }
 
+    public function testSpeciesGetPredictions()
+    {
+        $flowers = IrisFlower::all();
+
+        $correct = 0;
+
+        foreach ($flowers as $flower) {
+            $predictions = $flower->getPredictions('species');;
+
+            if ($flower->species === array_keys($predictions)[0]) {
+                $correct++;
+            }
+        }
+
+        $percentageCorrect = ($correct / $flowers->count()) * 100;
+
+        $this->assertGreaterThanOrEqual(95, $percentageCorrect);
+    }
+
+    public function testPetalWidthGetPredictionsFails()
+    {
+        $this->expectException('InvalidArgumentException');
+
+        IrisFlower::first()->getPredictions('petal_width');
+    }
+
 }
