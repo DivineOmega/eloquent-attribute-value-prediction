@@ -42,7 +42,7 @@ $house->value = $house->predict('value');
 To install just run the following Composer command.
 
 ```bash
-coomposer require divineomega/eloquent-attribute-value-prediction
+composer require divineomega/eloquent-attribute-value-prediction
 ```
 
 After installation, you need to set up your model for attribute prediction.
