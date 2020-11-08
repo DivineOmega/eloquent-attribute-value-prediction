@@ -61,7 +61,7 @@ final class PredictionTest extends TestCase
         $correct = 0;
 
         foreach ($flowers as $flower) {
-            $predictions = $flower->getPredictions('species');;
+            $predictions = $flower->getPredictions('species');
 
             if ($flower->species === array_keys($predictions)[0]) {
                 $correct++;
