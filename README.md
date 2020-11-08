@@ -164,9 +164,36 @@ species, based on [Iris flower data set](https://en.wikipedia.org/wiki/Iris_flow
 
 ## Advanced
 
-### Prediction probabilities
+### Prediction confidence
 
-TODO
+If you wish, you can also retrieve the machine learning model's
+confidence that a prediction is correct. This is done with the `getPredictions`
+method.
+
+```php
+$flower = new \App\Models\IrisFlower();
+$flower->sepal_length = 4.5;
+$flower->sepal_width = 2.3;
+$flower->petal_length = 1.3;
+$flower->petal_width = 0.3;
+
+$predictions = $flower->getPredictions('species');
+
+/*
+array:3 [
+  "setosa" => 0.69785665879791
+  "versicolor" => 0.30214334120209
+  "virginica" => 0.0
+]
+*/
+```
+
+In this example, you can see that the machine learning model is ~70% confident
+the flower is a Setosa, ~30 confident the flower is a Versicolor, and 0% 
+confident the flower is a Virginica.
+
+Note that you can only use the `getPredictions` method if the attribute you are
+attempting to predict the value of is non-numeric. 
 
 ### Changing machine learning model(s)
 
