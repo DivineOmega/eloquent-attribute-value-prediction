@@ -195,6 +195,36 @@ confident the flower is a Virginica.
 Note that you can only use the `getPredictions` method if the attribute you are
 attempting to predict the value of is non-numeric. 
 
-### Changing machine learning model(s)
+### Changing attribute estimators
 
-TODO
+By default, attribute values are predicted using 
+[K-d Neighbors](K-d Neighbors). This is a more efficient form of
+a standard K Nearest Neighbors algorithm.
+
+The machine learning algorithm that is used to predict your attribute values
+is known as an 'estimator'. If you wish, you can modify the estimator which
+is used for each attribute.
+
+To do this, you need to add a `registerEstimators` method to your model.
+
+```php
+public function registerEstimators(): array
+{
+    return [
+        'species' => new MultilayerPerceptron([
+            new Dense(50),
+            new Dense(50),
+        ]),
+    ];
+}
+```
+
+In the example above, we are changing the estimator for the `species` attribute
+to a multilayer precepton classifier (neurlal network) with two densely connected 
+hidden layers.
+
+Under the hood, this package uses the [Rubix ML](https://rubixml.com/) library.
+This means you can use any estimator is supports.
+
+See the [Choosing an Estimator](https://docs.rubixml.com/en/latest/choosing-an-estimator.html)
+page for a list of all available estimators you can use for attribute prediction.
