@@ -122,7 +122,7 @@ You can train your model(s) using the `eavp:train` Artisan command, as shown
 in the example below.
 
 ```bash
-php artisan eavp:train \App\Models\IrisFlower
+php artisan eavp:train \\App\\Models\\IrisFlower
 ```
 
 One model will be trained for each of the attributes you wish to predict. When
