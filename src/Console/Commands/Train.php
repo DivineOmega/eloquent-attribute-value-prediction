@@ -87,7 +87,7 @@ class Train extends Command
         foreach($attributes as $classAttribute => $attributesToTrainFrom) {
             $this->line('Training model for '.$classAttribute.' attribute from '.count($attributesToTrainFrom).' other attribute(s)...');
 
-            $modelPath = PathHelper::getModelPath($modelClass, $classAttribute);
+            $modelPath = PathHelper::getModelPath(get_class($model), $classAttribute);
 
             if (array_key_exists($classAttribute, $estimators)) {
                 $baseEstimator = $estimators[$classAttribute];
