@@ -12,7 +12,7 @@ abstract class DatasetHelper
         $predictableAttributes = $model->registerPredictableAttributes();
 
         if (!array_key_exists($attributeToPredict, $predictableAttributes)) {
-            throw new InvalidArgumentException('Attempted to predict an attribute that is not returned from the model\'s `getPredictionAttributes` method.');
+            throw new InvalidArgumentException('Attempted to predict an attribute that is not returned from the model\'s `registerPredictableAttributes` method.');
         }
 
         $otherAttributes = $predictableAttributes[$attributeToPredict];
