@@ -142,7 +142,7 @@ automatically.
 Once you have set up your Eloquent model, and trained your machine learning 
 model(s), you can begin predicting attributes.
 
-For example, to predict the species of an IrisFlower, you can create a new
+For example, to predict the species of an Iris flower, you can create a new
 `IrisFlower` object and populate a few of its known attributes, then call the
 `predict` method.
 
