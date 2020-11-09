@@ -197,9 +197,8 @@ attempting to predict the value of is non-numeric.
 
 ### Changing attribute estimators
 
-By default, attribute values are predicted using 
-[K-d Neighbors](K-d Neighbors). This is a more efficient form of
-a standard K Nearest Neighbors algorithm.
+By default, attribute values are predicted using K-d Neighbors. 
+This is a more efficient form of a standard K Nearest Neighbors algorithm.
 
 The machine learning algorithm that is used to predict your attribute values
 is known as an 'estimator'. If you wish, you can modify the estimator which
@@ -220,7 +219,7 @@ public function registerEstimators(): array
 ```
 
 In the example above, we are changing the estimator for the `species` attribute
-to a multilayer precepton classifier (neurlal network) with two densely connected 
+to a multilayer perceptron classifier (neural network) with two densely connected 
 hidden layers.
 
 Under the hood, this package uses the [Rubix ML](https://rubixml.com/) library.
