@@ -12,6 +12,7 @@ use Rubix\ML\Classifiers\KDNeighbors;
 use Rubix\ML\Classifiers\KNearestNeighbors;
 use Rubix\ML\Classifiers\MultilayerPerceptron;
 use Rubix\ML\Datasets\Labeled;
+use Rubix\ML\DataType;
 use Rubix\ML\Estimator;
 use Rubix\ML\NeuralNet\Layers\Dense;
 use Rubix\ML\NeuralNet\Layers\PReLU;
@@ -131,14 +132,7 @@ class Train extends Command
     private function getEstimator(string $modelPath, Estimator $baseEstimator): Estimator
     {
         $estimator = new PersistentModel(
-            new Pipeline(
-                [
-                    new MissingDataImputer(),
-                    new OneHotEncoder(),
-                    new ZScaleStandardizer(),
-                ],
-                $baseEstimator
-            ),
+            new Pipeline($this->getTransformers($baseEstimator), $baseEstimator),
             new Filesystem($modelPath)
         );
 
@@ -151,12 +145,6 @@ class Train extends Command
 
     private function getDefaultBaseEstimator(bool $continuous): Estimator
     {
-//        $layers = [
-//            new Dense(100),
-//            new Dense(100),
-//            new Dense(100),
-//        ];
-
         $baseEstimator = new KDNeighbors();
 
         if ($continuous) {
@@ -164,5 +152,21 @@ class Train extends Command
         }
 
         return $baseEstimator;
+    }
+
+    private function getTransformers(Estimator $estimator): array
+    {
+        $dataTypes = $estimator->compatibility();
+
+        $transformers = [];
+        $transformers[] = new MissingDataImputer();
+
+        if (!in_array(DataType::categorical(), $dataTypes) && in_array(DataType::continuous(), $dataTypes)) {
+            $transformers[] = new OneHotEncoder();
+        }
+
+        $transformers[] = new ZScaleStandardizer();
+
+        return $transformers;
     }
 }
