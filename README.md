@@ -1,18 +1,18 @@
+<hr/>
+
 <h1 align="center">🖥️🧠💪 Eloquent Attribute Value Prediction</h1>
 <p align="center">
     ❤️ <b>Machine Learning For Laravel Developers!</b> ❤️ 
 </p>
 
-<hr/>
-
-<div align="center">
+<p align="center">
     <a href="https://github.com/DivineOmega/eloquent-attribute-value-prediction/actions">
         <img src="https://github.com/DivineOmega/eloquent-attribute-value-prediction/workflows/Tests/badge.svg" />
     </a>
     <a href="https://packagist.org/packages/divineomega/eloquent-attribute-value-prediction/stats">
         <img src="https://img.shields.io/packagist/dt/DivineOmega/eloquent-attribute-value-prediction.svg" />
     </a>
-</div>
+</p>
 
 <hr/>
 
