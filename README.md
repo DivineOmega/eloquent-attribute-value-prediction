@@ -1,5 +1,7 @@
 # Eloquent Attribute Value Prediction
 
+![Tests](https://github.com/DivineOmega/eloquent-attribute-value-prediction/workflows/Tests/badge.svg)
+
 Predict attribute values for your Laravel Eloquent models using machine learning!
 
 You can use a very simple syntax, to predict both categorical and continuous (numeric) attributes.
