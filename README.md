@@ -1,7 +1,5 @@
 # Eloquent Attribute Value Prediction
 
-*Work in progress*
-
 Predict attribute values for your Laravel Eloquent models using machine learning!
 
 You can use a very simple syntax, to predict both categorical and continuous (numeric) attributes.
