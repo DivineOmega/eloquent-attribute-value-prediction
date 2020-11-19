@@ -1,4 +1,8 @@
-# Eloquent Attribute Value Prediction
+# 🖥️🧠💪 Eloquent Attribute Value Prediction
+
+** ❤️ Machine Learning For Laravel Developers! ❤️ **
+
+---
 
 ![Tests](https://github.com/DivineOmega/eloquent-attribute-value-prediction/workflows/Tests/badge.svg)
 
