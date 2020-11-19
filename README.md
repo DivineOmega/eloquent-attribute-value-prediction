@@ -20,10 +20,10 @@ $animal->name = $animal->predict('name');
 $predictions = $animal->getPredictions('name');
 
 // [
-//   'cat' => 43,
-//   'dog' => 40,
-//   'bird' => 10,
-//   'elephant => 9,
+//   'cat' => 0.43,
+//   'dog' => 0.40,
+//   'bird' => 0.10,
+//   'elephant => 0.9,
 // ]
 
 
