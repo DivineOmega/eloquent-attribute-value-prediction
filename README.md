@@ -5,7 +5,7 @@
 
 <hr/>
 
-<p align="center">
+<div align="center">
     <a href="https://github.com/DivineOmega/eloquent-attribute-value-prediction/actions">
         <img src="https://github.com/DivineOmega/eloquent-attribute-value-prediction/workflows/Tests/badge.svg" />
     </a>
