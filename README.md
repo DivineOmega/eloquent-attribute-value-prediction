@@ -12,7 +12,7 @@
     <a href="https://packagist.org/packages/divineomega/eloquent-attribute-value-prediction/stats">
         <img src="https://img.shields.io/packagist/dt/DivineOmega/eloquent-attribute-value-prediction.svg" />
     </a>
-</p>
+</div>
 
 <hr/>
 
