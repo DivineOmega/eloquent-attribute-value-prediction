@@ -1,12 +1,22 @@
-# 🖥️🧠💪 Eloquent Attribute Value Prediction
+<h1 align="center">🖥️🧠💪 Eloquent Attribute Value Prediction</h1>
+<p align="center">
+    ❤️ <b>Machine Learning For Laravel Developers!</b> ❤️ 
+</p>
 
-❤️ **Machine Learning For Laravel Developers!** ❤️ 
+<hr/>
 
----
+<p align="center">
+    <a href="https://github.com/DivineOmega/eloquent-attribute-value-prediction/actions">
+        <img src="https://github.com/DivineOmega/eloquent-attribute-value-prediction/workflows/Tests/badge.svg" />
+    </a>
+    <a href="https://packagist.org/packages/divineomega/eloquent-attribute-value-prediction/stats">
+        <img src="https://img.shields.io/packagist/dt/DivineOmega/eloquent-attribute-value-prediction.svg" />
+    </a>
+</p>
 
-![Tests](https://github.com/DivineOmega/eloquent-attribute-value-prediction/workflows/Tests/badge.svg)
+<hr/>
 
-With this package you'll be able to predict attribute values for your Laravel Eloquent models using the power of machine learning!
+With this package you'll be able to predict attribute values for your Laravel Eloquent models using the power of machine learning! 🌟
 
 With an intuitive syntax you can predict the values of both categorical (string) and continuous (numeric) attributes. Take a look at the examples below.
 
