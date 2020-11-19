@@ -36,5 +36,8 @@
                 "DivineOmega\\EloquentAttributeValuePrediction\\ServiceProvider"
             ]
         }
+    },
+    "scripts": {
+        "test": "phpunit"
     }
 }
