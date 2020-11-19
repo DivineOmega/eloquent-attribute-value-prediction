@@ -1,15 +1,14 @@
 # 🖥️🧠💪 Eloquent Attribute Value Prediction
 
-** ❤️ Machine Learning For Laravel Developers! ❤️ **
+❤️ **Machine Learning For Laravel Developers!** ❤️ 
 
 ---
 
 ![Tests](https://github.com/DivineOmega/eloquent-attribute-value-prediction/workflows/Tests/badge.svg)
 
-Predict attribute values for your Laravel Eloquent models using machine learning!
+Install this pacakge, and you'll be able to predict attribute values for your Laravel Eloquent models using the power of machine learning!
 
-You can use a very simple syntax, to predict both categorical and continuous (numeric) attributes.
-Take a look at the example below.
+With an intuitive syntax you can predict the values of both categorical (string) and continuous (numeric) attributes. Take a look at the examples below.
 
 ```php
 $animal = new \App\Models\Animal();
@@ -29,8 +28,6 @@ $predictions = $animal->getPredictions('name');
 //   'bird' => 0.10,
 //   'elephant => 0.9,
 // ]
-
-
 
 $house = new \App\Models\House();
 $house->num_bedrooms = 3;
