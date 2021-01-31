@@ -236,5 +236,5 @@ hidden layers.
 Under the hood, this package uses the [Rubix ML](https://rubixml.com/) library.
 This means you can use any estimator is supports.
 
-See the [Choosing an Estimator](https://docs.rubixml.com/en/latest/choosing-an-estimator.html)
+See the [Choosing an Estimator](https://docs.rubixml.com/latest/choosing-an-estimator.html)
 page for a list of all available estimators you can use for attribute prediction.
