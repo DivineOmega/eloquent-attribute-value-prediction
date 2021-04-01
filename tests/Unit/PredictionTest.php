@@ -2,9 +2,11 @@
 
 namespace DivineOmega\EloquentAttributeValuePrediction\Tests\Unit;
 
+use DivineOmega\EloquentAttributeValuePrediction\Exceptions\ModelFileNotFound;
 use DivineOmega\EloquentAttributeValuePrediction\Helpers\PathHelper;
 use DivineOmega\EloquentAttributeValuePrediction\ServiceProvider;
 use DivineOmega\EloquentAttributeValuePrediction\Tests\Unit\TestClasses\Eloquent\IrisFlower;
+use DivineOmega\EloquentAttributeValuePrediction\Tests\Unit\TestClasses\Eloquent\Untrained;
 use Illuminate\Database\Eloquent\Model;
 use Orchestra\Testbench\TestCase;
 
@@ -80,4 +82,12 @@ final class PredictionTest extends TestCase
         IrisFlower::first()->getPredictions('petal_width');
     }
 
+    public function testModelFileNotFoundThrown()
+    {
+
+        $this->expectException(ModelFileNotFound::class);
+
+        Untrained::first()->getPredictions('abr');
+
+    }
 }
