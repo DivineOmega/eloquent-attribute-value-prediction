@@ -11,7 +11,7 @@
     ],
     "require": {
         "php": ">=7.1",
-        "laravel/framework": "^5.1||^6.0||^7.0||^8.0",
+        "laravel/framework": "^5.1||^6.0||^7.0||^8.0||^9.0",
         "rubix/ml": "0.2.*",
         "facade/ignition-contracts": "^1.0"
     },
