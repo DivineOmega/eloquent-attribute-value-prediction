@@ -2,6 +2,7 @@
 
 namespace DivineOmega\EloquentAttributeValuePrediction\Traits;
 
+use DivineOmega\EloquentAttributeValuePrediction\Exceptions\ModelFileNotFound;
 use DivineOmega\EloquentAttributeValuePrediction\Helpers\DatasetHelper;
 use DivineOmega\EloquentAttributeValuePrediction\Helpers\PathHelper;
 use Exception;
@@ -28,15 +29,23 @@ trait PredictsAttributes
     {
         if ($this->isAttributeContinuous($attribute)) {
             throw new InvalidArgumentException(
-                'You can not get multiple predictions for a continious (numeric) argument. Try using the `predict` method instead.'
+                'You can not get multiple predictions for a continuous (numeric) argument. Try using the `predict` method instead.'
             );
         }
 
         $dataset = DatasetHelper::buildUnlabeledDataset($this, $attribute);
 
+        //If Model File is missing, throw a custom exception with a solution in it.
         $modelPath = PathHelper::getModelPath(get_class($this), $attribute);
 
-        $estimator = PersistentModel::load(new Filesystem($modelPath));
+        if(!is_file($modelPath))
+        {
+            throw new ModelFileNotFound(get_class($this));
+        }
+
+        $modelFile = new Filesystem($modelPath);
+
+        $estimator = PersistentModel::load($modelFile);
 
         $predictions = $estimator->proba($dataset)[0];
 
